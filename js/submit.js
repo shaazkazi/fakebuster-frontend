@@ -150,6 +150,12 @@ async function handleFormSubmission(event) {
     const formData = new FormData(event.target);
     const token = localStorage.getItem('authToken'); // Assuming the token is stored in localStorage
 
+    if (!token) {
+        console.error('No auth token found');
+        showNotification('Authentication token is missing. Please log in again.', 'error');
+        return;
+    }
+
     try {
         const response = await fetch(`${API_URL}/api/news`, {
             method: 'POST',
@@ -180,14 +186,11 @@ function initializeCharacterCounters() {
 
 function initializeCharacterCounter(elementId, limit) {
     const element = document.getElementById(elementId);
-    if (element) {
-        const counter = element.parentElement.querySelector('.character-count');
-        element.addEventListener('input', function() {
-            const count = this.value.length;
-            counter.textContent = `${count}/${limit}`;
-            counter.style.color = count > limit ? 'var(--danger)' : 'var(--gray-700)';
-        });
-    }
+    const counter = document.getElementById(`${elementId}Counter`);
+    element.addEventListener('input', () => {
+        const remaining = limit - element.value.length;
+        counter.textContent = `${remaining} characters remaining`;
+    });
 }
 
 function showNotification(message, type) {
