@@ -144,40 +144,32 @@ function setupNewsForm(elements) {
     }
 }
 
-async function handleFormSubmission(e) {
-    e.preventDefault();
-    
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('title', document.getElementById('newsTitle').value);
-    formData.append('content', document.getElementById('newsContent').value);
-    formData.append('sourcePlatform', document.getElementById('newsSource').value);
-    formData.append('category', document.querySelector('input[name="category"]:checked').value);
-    formData.append('assessment', document.querySelector('.assessment-option.selected').dataset.value);
-    formData.append('author', 'admin');
+async function handleFormSubmission(event) {
+    event.preventDefault();
 
-    if (uploadedFile) {
-        formData.append('image', uploadedFile);
-    }
+    const formData = new FormData(event.target);
+    const token = localStorage.getItem('authToken'); // Assuming the token is stored in localStorage
 
     try {
         const response = await fetch(`${API_URL}/api/news`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                // Add other headers if necessary
             },
             body: formData
         });
 
-        if (response.ok) {
-            showNotification('News submitted successfully!', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1500);
-        } else {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Submission failed');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    } catch (err) {
-        showNotification(err.message, 'error');
+
+        const data = await response.json();
+        showNotification('News submitted successfully!', 'success');
+        // Handle the response data
+    } catch (error) {
+        console.error('Failed to submit news:', error);
+        showNotification('Failed to submit news. Please try again.', 'error');
     }
 }
 
