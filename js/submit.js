@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         previewArea: document.getElementById('previewArea')
     };
 
-    // Check existing token
     const token = localStorage.getItem('token');
     if (token && elements.newsForm && elements.adminLogin) {
         elements.adminLogin.style.display = 'none';
@@ -45,10 +44,10 @@ function setupLoginForm(elements) {
 
             if (username === ADMIN_CREDENTIALS.username && 
                 password === ADMIN_CREDENTIALS.password) {
+                const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwNjg4MTYwMH0.mocked';
+                localStorage.setItem('token', mockToken);
                 elements.adminLogin.style.display = 'none';
                 elements.newsForm.style.display = 'block';
-                // Set a mock token for consistency
-                localStorage.setItem('token', 'admin-mock-token');
             } else {
                 showNotification('Invalid credentials', 'error');
             }
@@ -148,13 +147,14 @@ function setupNewsForm(elements) {
 async function handleFormSubmission(e) {
     e.preventDefault();
     
-    const token = 'admin-mock-token';
+    const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('title', document.getElementById('newsTitle').value);
     formData.append('content', document.getElementById('newsContent').value);
     formData.append('sourcePlatform', document.getElementById('newsSource').value);
     formData.append('category', document.querySelector('input[name="category"]:checked').value);
     formData.append('assessment', document.querySelector('.assessment-option.selected').dataset.value);
+    formData.append('author', 'admin');
 
     if (uploadedFile) {
         formData.append('image', uploadedFile);
@@ -173,10 +173,11 @@ async function handleFormSubmission(e) {
             showNotification('News submitted successfully!', 'success');
             setTimeout(() => window.location.href = 'index.html', 1500);
         } else {
-            throw new Error('Submission failed');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Submission failed');
         }
     } catch (err) {
-        showNotification('Failed to submit news: ' + err.message, 'error');
+        showNotification(err.message, 'error');
     }
 }
 
