@@ -373,3 +373,22 @@ button {
         align-items: flex-start;
     }
 }
+:root {
+    --primary: #2962ff;
+    --secondary: #304ffe;
+    --success: #00c853;
+    --danger: #ff3d00;
+    --warning: #ffd600;
+    --background: #121212;
+    --text: #ffffff;
+    --gray-100: #1e1e1e;
+    --gray-200: #2d2d2d;
+    --gray-300: #404040;
+    --gray-700: #666666;
+    --gray-800: #909090;
+}
+
+/* Remove theme toggle button styles */
+.theme-toggle {
+    display: none;
+}
