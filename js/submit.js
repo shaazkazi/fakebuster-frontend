@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm: document.getElementById('loginForm'),
         newsForm: document.getElementById('newsSubmissionForm'),
         sourceSelect: document.getElementById('newsSource'),
-        websiteUrlField: document.getElementById('websiteUrl'),
         uploadArea: document.getElementById('uploadArea'),
         fileInput: document.getElementById('mediaUpload'),
         previewArea: document.getElementById('previewArea')
@@ -29,6 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.newsForm.style.display = 'block';
     }
 
+    setupLoginForm(elements);
+    setupFileUpload(elements);
+    setupSourceSelect(elements);
+    setupAssessmentOptions();
+    setupNewsForm(elements);
+    initializeCharacterCounters();
+});
+
+function setupLoginForm(elements) {
     if (elements.loginForm) {
         elements.loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -37,125 +45,159 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: document.getElementById('password').value
             };
 
-            if (formData.username === ADMIN_CREDENTIALS.username && 
-                formData.password === ADMIN_CREDENTIALS.password) {
-                try {
-                    const response = await fetch('http://localhost:5000/api/auth/login', {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-                    if (!response.ok) throw new Error('Login failed');
+                if (!response.ok) throw new Error('Login failed');
 
-                    const { token } = await response.json();
-                    localStorage.setItem('token', token);
-                    
-                    elements.adminLogin.style.display = 'none';
-                    elements.newsForm.style.display = 'block';
-                } catch (err) {
-                    alert('Login failed: ' + err.message);
-                }
-            } else {
-                alert('Invalid credentials');
+                const { token } = await response.json();
+                localStorage.setItem('token', token);
+                
+                elements.adminLogin.style.display = 'none';
+                elements.newsForm.style.display = 'block';
+            } catch (err) {
+                showNotification('Login failed: ' + err.message, 'error');
             }
         });
     }
+}
 
+function setupFileUpload(elements) {
     if (elements.uploadArea && elements.fileInput) {
-        setupFileUpload(elements);
+        elements.uploadArea.addEventListener('click', () => elements.fileInput.click());
+        elements.fileInput.addEventListener('change', handleFileUpload);
+        setupDragAndDrop(elements);
+    }
+}
+
+function setupDragAndDrop(elements) {
+    elements.uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        elements.uploadArea.classList.add('drag-over');
+    });
+
+    elements.uploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        elements.uploadArea.classList.remove('drag-over');
+    });
+
+    elements.uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        elements.uploadArea.classList.remove('drag-over');
+        
+        const file = e.dataTransfer.files[0];
+        elements.fileInput.files = e.dataTransfer.files;
+        handleFileUpload({ target: { files: [file] } });
+    });
+}
+
+function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        showNotification('File size should be less than 5MB', 'error');
+        return;
     }
 
-    if (elements.sourceSelect && elements.websiteUrlField) {
+    if (!file.type.startsWith('image/')) {
+        showNotification('Please upload an image file', 'error');
+        return;
+    }
+
+    uploadedFile = file;
+    displayPreview(file);
+}
+
+function displayPreview(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('previewArea').innerHTML = `
+            <div class="preview-item">
+                <img src="${e.target.result}" alt="Preview">
+                <button type="button" class="remove-btn" onclick="removeImage()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+    };
+    reader.readAsDataURL(file);
+}
+
+function setupSourceSelect(elements) {
+    if (elements.sourceSelect) {
         elements.sourceSelect.addEventListener('change', (e) => {
-            elements.websiteUrlField.style.display = 
-                e.target.value === 'website' ? 'block' : 'none';
+            const websiteUrlField = document.getElementById('websiteUrlField');
+            if (websiteUrlField) {
+                websiteUrlField.style.display = e.target.value === 'website' ? 'block' : 'none';
+            }
         });
     }
+}
 
-    setupAssessmentOptions();
+function setupAssessmentOptions() {
+    const options = document.querySelectorAll('.assessment-option');
+    options.forEach(option => {
+        option.addEventListener('click', () => {
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+        });
+    });
+}
 
+function setupNewsForm(elements) {
     if (elements.newsForm) {
         elements.newsForm.addEventListener('submit', handleFormSubmission);
     }
-
-    initializeCharacterCounter('newsTitle', 100);
-    initializeCharacterCounter('newsContent', 1000);
-});
-
-// Rest of your existing functions remain the same, but update handleFormSubmission:
+}
 
 async function handleFormSubmission(e) {
     e.preventDefault();
     
     const token = localStorage.getItem('token');
     if (!token) {
-        alert('Please login first');
+        showNotification('Please login first', 'error');
         return;
     }
 
     const formData = new FormData();
-    const newsTitle = document.getElementById('newsTitle');
-    const newsContent = document.getElementById('newsContent');
-    const newsSource = document.getElementById('newsSource');
-    const categoryInput = document.querySelector('input[name="category"]:checked');
-    const assessmentOption = document.querySelector('.assessment-option.selected');
-
-    if (!newsTitle || !newsContent || !newsSource || !categoryInput || !assessmentOption) {
-        alert('Please fill in all required fields');
-        return;
-    }
-
-    formData.append('title', newsTitle.value);
-    formData.append('content', newsContent.value);
-    formData.append('sourcePlatform', newsSource.value);
-    formData.append('category', categoryInput.value);
-    formData.append('assessment', assessmentOption.dataset.value);
+    formData.append('title', document.getElementById('newsTitle').value);
+    formData.append('content', document.getElementById('newsContent').value);
+    formData.append('sourcePlatform', document.getElementById('newsSource').value);
+    formData.append('category', document.querySelector('input[name="category"]:checked').value);
+    formData.append('assessment', document.querySelector('.assessment-option.selected').dataset.value);
 
     if (uploadedFile) {
         formData.append('image', uploadedFile);
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/news', {
+        const response = await fetch(`${API_URL}/api/news`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json'
+                'Authorization': `Bearer ${token}`
             },
             body: formData
         });
 
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-            return;
-        }
+        if (!response.ok) throw new Error('Submission failed');
 
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.message || 'Submission failed');
-        }
-
-        alert('News submitted successfully!');
-        window.location.href = 'index.html';
+        showNotification('News submitted successfully!', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1500);
     } catch (err) {
-        console.error('Error:', err);
-        alert('Failed to submit news: ' + err.message);
+        showNotification('Failed to submit news: ' + err.message, 'error');
     }
 }
 
-function setupAssessmentOptions() {
-    const assessmentOptions = document.querySelectorAll('.assessment-option');
-    assessmentOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            assessmentOptions.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-        });
-    });
+function initializeCharacterCounters() {
+    initializeCharacterCounter('newsTitle', 100);
+    initializeCharacterCounter('newsContent', 1000);
 }
 
 function initializeCharacterCounter(elementId, limit) {
@@ -166,15 +208,26 @@ function initializeCharacterCounter(elementId, limit) {
             const count = this.value.length;
             counter.textContent = `${count}/${limit}`;
             counter.style.color = count > limit ? 'var(--danger)' : 'var(--gray-700)';
-            this.style.borderColor = count > limit ? 'var(--danger)' : '';
         });
     }
 }
 
-function removeImage() {
-    uploadedFile = null;
-    const previewArea = document.getElementById('previewArea');
-    const fileInput = document.getElementById('mediaUpload');
-    if (previewArea) previewArea.innerHTML = '';
-    if (fileInput) fileInput.value = '';
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
 }
+
+window.removeImage = function() {
+    uploadedFile = null;
+    document.getElementById('previewArea').innerHTML = '';
+    document.getElementById('mediaUpload').value = '';
+};
+
+export {
+    handleFormSubmission,
+    setupFileUpload,
+    setupAssessmentOptions
+};

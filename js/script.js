@@ -1,7 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'complete') {
+        initializeContent();
+    } else {
+        window.addEventListener('load', initializeContent);
+    }
+});
+
+function initializeContent() {
     initializeAnimations();
     setupEventListeners();
-});
+    displaySubmittedNews();
+}
+
+function setupEventListeners() {
+    // Filter Tabs
+    const filterTabs = document.querySelectorAll('.filter-tabs button');
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
 
 function initializeAnimations() {
     const observer = new IntersectionObserver(
@@ -22,15 +55,19 @@ function initializeAnimations() {
 
 function displaySubmittedNews() {
     const newsGrid = document.querySelector('.news-grid');
+    if (!newsGrid) return;
+
     const savedNews = JSON.parse(localStorage.getItem('submittedNews') || '[]');
     
+    if (savedNews.length === 0) return;
+
     savedNews.forEach(news => {
         const article = document.createElement('article');
         article.className = `news-card ${news.assessment === 'likely-true' ? 'verified' : 'false'}`;
         
         article.innerHTML = `
             <div class="news-image">
-                <img src="${news.image}" alt="${news.title}">
+                <img src="${news.image}" alt="${news.title}" onerror="this.src='placeholder.jpg'">
                 <span class="verification-badge">
                     ${news.assessment === 'likely-true' ? 'Verified' : 'False'}
                 </span>
@@ -45,7 +82,7 @@ function displaySubmittedNews() {
             </div>
         `;
         
-        newsGrid?.insertBefore(article, newsGrid.firstChild);
+        newsGrid.insertBefore(article, newsGrid.firstChild);
     });
 }
 
@@ -69,6 +106,9 @@ function timeAgo(date) {
     return 'Just now';
 }
 
-
-// Call this function when page loads
-displaySubmittedNews();
+// Export functions for potential testing
+export {
+    initializeAnimations,
+    displaySubmittedNews,
+    timeAgo
+};

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchPosts() {
     try {
-        const response = await fetch('http://localhost:5000/api/news', {
+        const response = await fetch(`${API_URL}/api/news`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -67,7 +67,7 @@ function setupSearch() {
         searchInput.addEventListener('input', debounce(async (e) => {
             const searchTerm = e.target.value.toLowerCase();
             try {
-                const response = await fetch(`http://localhost:5000/api/news?search=${searchTerm}`, {
+                const response = await fetch(`${API_URL}/api/news?search=${searchTerm}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -87,7 +87,7 @@ function setupFilters() {
         button.addEventListener('click', async () => {
             const filter = button.dataset.filter;
             try {
-                const response = await fetch(`http://localhost:5000/api/news?filter=${filter}`, {
+                const response = await fetch(`${API_URL}/api/news?filter=${filter}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -101,11 +101,20 @@ function setupFilters() {
     });
 }
 
+function setupNewPostButton() {
+    const newPostBtn = document.querySelector('.new-post-btn');
+    if (newPostBtn) {
+        newPostBtn.addEventListener('click', () => {
+            window.location.href = 'submit-news.html';
+        });
+    }
+}
+
 async function deletePost(id) {
     if (!confirm('Are you sure you want to delete this post?')) return;
     
     try {
-        const response = await fetch(`http://localhost:5000/api/news/${id}`, {
+        const response = await fetch(`${API_URL}/api/news/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -126,6 +135,24 @@ function editPost(id) {
     window.location.href = `submit-news.html?edit=${id}`;
 }
 
+function viewStats(id) {
+    window.location.href = `news-stats.html?id=${id}`;
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function formatStatus(status) {
+    return status.split('-').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+}
+
 function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -141,3 +168,11 @@ function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
 }
+
+export {
+    fetchPosts,
+    displayPosts,
+    deletePost,
+    editPost,
+    viewStats
+};
