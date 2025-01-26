@@ -5,13 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newsId) {
         fetchNewsDetail(newsId);
         fetchRelatedPosts(newsId);
-        fetchComments(newsId);
     }
-
     setupShareButtons();
     setupCommentForm();
-    setupVoteButtons();
 });
+
 
 async function fetchNewsDetail(id) {
     try {

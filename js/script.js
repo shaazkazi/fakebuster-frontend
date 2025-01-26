@@ -2,18 +2,23 @@ import { API_URL } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.querySelector('.theme-toggle');
-    if (themeToggle) {  // Add check
-        const root = document.documentElement;
-        const currentTheme = localStorage.getItem('theme') || 
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        
-        setTheme(currentTheme);
-        
-        themeToggle.addEventListener('click', () => {
-            const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            setTheme(newTheme);
-        });
+    const root = document.documentElement;
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    function setTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeIcon(theme);
     }
+
+    const savedTheme = localStorage.getItem('theme') || 
+        (prefersDarkScheme.matches ? 'dark' : 'light');
+    setTheme(savedTheme);
+
+    themeToggle?.addEventListener('click', () => {
+        const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+    });
 });
 
     

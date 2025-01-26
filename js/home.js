@@ -1,8 +1,11 @@
 import { API_URL } from './config.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializeHome();
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.location.pathname.includes('index.html')) {
+        await initializeHome();
+    }
 });
+
 
 async function initializeHome() {
     await Promise.all([
