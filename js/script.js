@@ -1,53 +1,6 @@
 import { API_URL } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Other functionality remains
-    // Theme-related code removed
-});
-
-    
-    const root = document.documentElement;
-
-    // Function to set theme
-    function setTheme(theme) {
-        root.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        updateThemeIcon(theme);
-    }
-    
-    // Function to update theme icon
-    function updateThemeIcon(theme) {
-        const icon = themeToggle.querySelector('i');
-        if (theme === 'dark') {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
-    }
-    
-    // Initialize theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        setTheme(savedTheme);
-    } else {
-        setTheme(prefersDarkScheme.matches ? 'dark' : 'light');
-    }
-    
-    // Theme toggle click handler
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = root.getAttribute('data-theme');
-        setTheme(currentTheme === 'light' ? 'dark' : 'light');
-    });
-    
-    // Listen for system theme changes
-    prefersDarkScheme.addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            setTheme(e.matches ? 'dark' : 'light');
-        }
-    });
-
     // Filter Tabs
     const filterTabs = document.querySelectorAll('.filter-tabs button');
     filterTabs.forEach(tab => {
@@ -61,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
+            document.querySelector(this.getAttribute('href'))?.scrollIntoView({
                 behavior: 'smooth'
             });
         });
@@ -81,9 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.news-card, .step, .stat-card').forEach(el => {
         observer.observe(el);
+    });
+
+    displaySubmittedNews();
 });
 
-// Add this to your existing DOMContentLoaded event listener
 function displaySubmittedNews() {
     const newsGrid = document.querySelector('.news-grid');
     const savedNews = JSON.parse(localStorage.getItem('submittedNews') || '[]');
@@ -109,7 +64,7 @@ function displaySubmittedNews() {
             </div>
         `;
         
-        newsGrid.insertBefore(article, newsGrid.firstChild);
+        newsGrid?.insertBefore(article, newsGrid.firstChild);
     });
 }
 
@@ -132,6 +87,7 @@ function timeAgo(date) {
     }
     return 'Just now';
 }
+
 
 // Call this function when page loads
 displaySubmittedNews();
