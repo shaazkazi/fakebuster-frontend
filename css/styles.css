@@ -392,3 +392,27 @@ button {
 .theme-toggle {
     display: none;
 }
+:root {
+    --primary: #2962ff;
+    --secondary: #304ffe;
+    --success: #00c853;
+    --danger: #ff3d00;
+    --warning: #ffd600;
+    --background: #121212;
+    --text: #ffffff;
+    --gray-100: #1e1e1e;
+    --gray-200: #2d2d2d;
+    --gray-300: #404040;
+    --gray-700: #666666;
+    --gray-800: #909090;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.navbar {
+    background: rgba(18, 18, 18, 0.8);
+    border-bottom: 1px solid var(--gray-700);
+}
