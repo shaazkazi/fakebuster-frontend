@@ -38,31 +38,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function setupLoginForm(elements) {
     if (elements.loginForm) {
-        elements.loginForm.addEventListener('submit', async (e) => {
+        elements.loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const formData = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
-            };
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-            try {
-                const response = await fetch(`${API_URL}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (!response.ok) throw new Error('Login failed');
-
-                const { token } = await response.json();
-                localStorage.setItem('token', token);
-                
+            if (username === ADMIN_CREDENTIALS.username && 
+                password === ADMIN_CREDENTIALS.password) {
                 elements.adminLogin.style.display = 'none';
                 elements.newsForm.style.display = 'block';
-            } catch (err) {
-                showNotification('Login failed: ' + err.message, 'error');
+                // Set a mock token for consistency
+                localStorage.setItem('token', 'admin-mock-token');
+            } else {
+                showNotification('Invalid credentials', 'error');
             }
         });
     }
