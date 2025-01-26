@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeBuster | AI-Powered News Verification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin-styles.css">
+<link rel="stylesheet" href="css/detail-styles.css">
+<link rel="stylesheet" href="css/home-styles.css">
+<link rel="stylesheet" href="css/submit-styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>FakeBuster</span>
+                </div>
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search news...">
+                        <button class="advanced-search-btn">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="nav-actions">
+                    <button class="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="submit-news">Submit News</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-container">
+                <h1>Verify Before You Share</h1>
+                <p>AI-powered news verification platform to combat misinformation</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <span class="stat-number">2.5K+</span>
+                        <span class="stat-label">News Verified Today</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">News Sources</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="filters-section">
+            <div class="container">
+                <div class="filters">
+                    <div class="category-filters">
+                        <button class="filter-btn active" data-category="all">All</button>
+                        <button class="filter-btn" data-category="politics">Politics</button>
+                        <button class="filter-btn" data-category="technology">Technology</button>
+                        <button class="filter-btn" data-category="health">Health</button>
+                        <button class="filter-btn" data-category="other">Other</button>
+                    </div>
+                    <div class="verification-filters">
+                        <button class="filter-btn" data-status="likely-true">
+                            <i class="fas fa-check"></i> Verified
+                        </button>
+                        <button class="filter-btn" data-status="likely-false">
+                            <i class="fas fa-times"></i> False
+                        </button>
+                        <button class="filter-btn" data-status="unsure">
+                            <i class="fas fa-question"></i> Under Review
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="news-grid-section">
+            <div class="container">
+                <div class="grid-layout">
+                    <div class="main-content">
+                        <div class="news-grid" id="newsGrid"></div>
+                        <div class="load-more">
+                            <button class="load-more-btn">Load More</button>
+                        </div>
+                    </div>
+                    <aside class="sidebar">
+                        <div class="trending-section">
+                            <h3>Trending Now</h3>
+                            <div class="trending-list" id="trendingList"></div>
+                        </div>
+                        <div class="categories-section">
+                            <h3>Popular Categories</h3>
+                            <div class="category-list" id="categoryList"></div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="advanced-search-modal" id="advancedSearchModal">
+        <div class="modal-content">
+            <h2>Advanced Search</h2>
+            <form id="advancedSearchForm">
+                <div class="form-group">
+                    <label>Date Range</label>
+                    <div class="date-inputs">
+                        <input type="date" name="startDate">
+                        <input type="date" name="endDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Source Platform</label>
+                    <select name="sourcePlatform">
+                        <option value="">All Platforms</option>
+                        <option value="website">News Websites</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="whatsapp">WhatsApp</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Verification Status</label>
+                    <select name="status">
+                        <option value="">All Status</option>
+                        <option value="likely-true">Verified</option>
+                        <option value="likely-false">False</option>
+                        <option value="unsure">Under Review</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="reset-btn">Reset</button>
+                    <button type="submit" class="apply-btn">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/detail.js"></script>
+<script src="js/home.js"></script>
+<script src="js/submit.js"></script>
+</body>
+</html>

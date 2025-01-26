@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit News | FakeBuster</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin-styles.css">
+<link rel="stylesheet" href="css/detail-styles.css">
+<link rel="stylesheet" href="css/home-styles.css">
+<link rel="stylesheet" href="css/submit-styles.css">
+</head>
+<body>
+    <main class="submit-container">
+        <div class="submission-header">
+            <h1>Submit News for Verification</h1>
+            <div class="submission-stats">
+                <div class="stat">
+                    <i class="fas fa-bolt"></i>
+                    <span>Average verification time: 2 hours</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-check-circle"></i>
+                    <span>98% accuracy rate</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-login" id="adminLogin">
+            <div class="login-container">
+                <h2>Admin Login</h2>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <form class="submission-form" id="newsSubmissionForm">
+            <div class="form-grid">
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="newsTitle">News Title</label>
+                        <input type="text" id="newsTitle" required>
+                        <span class="character-count">0/100</span>
+                    </div>
+
+                    <div class="input-group source-group">
+                        <label for="newsSource">
+                            <i class="fas fa-share-nodes"></i>
+                            Source Platform
+                        </label>
+                        <div class="custom-select">
+                            <select id="newsSource" required>
+                                <option value="" disabled selected>Select source platform</option>
+                                <option value="website">📰 News Website</option>
+                                <option value="facebook">📱 Facebook</option>
+                                <option value="twitter">🐦 Twitter</option>
+                                <option value="instagram">📸 Instagram</option>
+                                <option value="whatsapp">💬 WhatsApp</option>
+                                <option value="telegram">✈️ Telegram</option>
+                                <option value="youtube">▶️ YouTube</option>
+                                <option value="other">🌐 Other</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Category</label>
+                        <div class="category-tags">
+                            <input type="radio" id="politics" name="category" value="politics">
+                            <label for="politics" class="tag">Politics</label>
+                        
+                            <input type="radio" id="technology" name="category" value="technology">
+                            <label for="technology" class="tag">Technology</label>
+                        
+                            <input type="radio" id="health" name="category" value="health">
+                            <label for="health" class="tag">Health</label>
+                        
+                            <input type="radio" id="other" name="category" value="other">
+                            <label for="other" class="tag">Other</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="input-group">
+                        <label for="newsContent">News Content</label>
+                        <textarea id="newsContent" rows="6" required></textarea>
+                        <span class="character-count">0/1000</span>
+                    </div>
+
+                    <div class="media-upload">
+                        <label>Supporting Media</label>
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h3>Drag & Drop Image Here</h3>
+                                <p>or</p>
+                                <button type="button" class="browse-btn">Browse Files</button>
+                                <span class="file-info">Supported: JPG, PNG, WebP (Max: 5MB)</span>
+                            </div>
+                            <input type="file" id="mediaUpload" accept="image/*" hidden>
+                        </div>
+                        <div class="preview-area" id="previewArea"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="verification-preference">
+                <h3>Initial Assessment</h3>
+                <div class="assessment-slider">
+                    <button type="button" class="assessment-option" data-value="likely-true">
+                        <i class="fas fa-check"></i>
+                        Likely True
+                    </button>
+                    <button type="button" class="assessment-option" data-value="unsure">
+                        <i class="fas fa-question"></i>
+                        Unsure
+                    </button>
+                    <button type="button" class="assessment-option" data-value="likely-false">
+                        <i class="fas fa-times"></i>
+                        Likely False
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit for Verification
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script src="js/script.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/detail.js"></script>
+<script src="js/home.js"></script>
+<script src="js/submit.js"></script>
+</body>
+</html>

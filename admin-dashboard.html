@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | FakeBuster</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/admin-styles.css">
+<link rel="stylesheet" href="css/detail-styles.css">
+<link rel="stylesheet" href="css/home-styles.css">
+<link rel="stylesheet" href="css/submit-styles.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-shield-alt"></i>
+                <span>FakeBuster Admin</span>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="active">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+                <a href="#posts">
+                    <i class="fas fa-newspaper"></i>
+                    Posts
+                </a>
+                <a href="#categories">
+                    <i class="fas fa-tags"></i>
+                    Categories
+                </a>
+                <a href="#comments">
+                    <i class="fas fa-comments"></i>
+                    Comments
+                </a>
+                <a href="#settings">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </nav>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search posts...">
+                </div>
+                <div class="header-actions">
+                    <button class="new-post-btn">
+                        <i class="fas fa-plus"></i>
+                        New Post
+                    </button>
+                    <div class="admin-profile">
+                        <img src="admin-avatar.jpg" alt="Admin">
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Posts</h3>
+                        <span class="stat-number">245</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Views</h3>
+                        <span class="stat-number">15.2K</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Shares</h3>
+                        <span class="stat-number">1.8K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-posts">
+                <div class="section-header">
+                    <h2>Recent Posts</h2>
+                    <button class="view-all-btn">View All</button>
+                </div>
+                <div class="posts-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="postsTableBody">
+                            <!-- Posts will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/detail.js"></script>
+<script src="js/home.js"></script>
+<script src="js/submit.js"></script>
+</body>
+</html>
