@@ -144,38 +144,43 @@ function setupNewsForm(elements) {
     }
 }
 
-async function handleFormSubmission(event) {
-    event.preventDefault();
+async function handleFormSubmission(e) {
+    e.preventDefault();
+    
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
 
-    const formData = new FormData(event.target);
-    const token = localStorage.getItem('authToken'); // Assuming the token is stored in localStorage
+    // Add required fields
+    formData.append('title', document.getElementById('newsTitle').value);
+    formData.append('content', document.getElementById('newsContent').value);
+    formData.append('sourcePlatform', document.getElementById('newsSource').value);
+    formData.append('category', document.querySelector('input[name="category"]:checked').value);
+    formData.append('assessment', document.querySelector('.assessment-option.selected').dataset.value);
+    formData.append('author', '65bb78428cd52648f699bf9a'); // Add valid MongoDB ObjectId
 
-    if (!token) {
-        console.error('No auth token found');
-        showNotification('Authentication token is missing. Please log in again.', 'error');
-        return;
+    if (uploadedFile) {
+        formData.append('image', uploadedFile);
     }
 
     try {
         const response = await fetch(`${API_URL}/api/news`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                // Add other headers if necessary
+                'Authorization': `Bearer ${token}`
             },
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
         const data = await response.json();
-        showNotification('News submitted successfully!', 'success');
-        // Handle the response data
-    } catch (error) {
-        console.error('Failed to submit news:', error);
-        showNotification('Failed to submit news. Please try again.', 'error');
+        
+        if (response.ok) {
+            showNotification('News submitted successfully!', 'success');
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        } else {
+            throw new Error(data.message || 'Submission failed');
+        }
+    } catch (err) {
+        showNotification(err.message, 'error');
     }
 }
 
