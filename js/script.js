@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     
+    const root = document.documentElement;
+
     // Function to set theme
     function setTheme(theme) {
         root.setAttribute('data-theme', theme);
