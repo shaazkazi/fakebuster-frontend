@@ -1,54 +1,48 @@
 import { API_URL } from './config.js';
 
-if (!API_URL) {
-    console.error('API_URL is not defined. Please check your config.js file.');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-    if (path === '/' || path.includes('index.html')) {
-        initializeHome();
-    }
+    initializeHome();
 });
 
 async function initializeHome() {
+    // Initialize with empty data first
+    displayNews([], document.getElementById('newsGrid'));
+    displayTrending([]);
+    displayCategories([]);
+
+    // Then try to fetch data
     try {
-        await Promise.all([
-            fetchLatestNews().catch(() => {}),
-            fetchTrendingNews().catch(() => {}),
-            fetchCategories().catch(() => {})
+        await Promise.allSettled([
+            fetchLatestNews(),
+            fetchTrendingNews(),
+            fetchCategories()
         ]);
-        setupSearch();
-        setupFilters();
-        setupInfiniteScroll();
     } catch (error) {
         console.log('Some features may not be available');
     }
+
+    setupSearch();
+    setupFilters();
+    setupInfiniteScroll();
 }
-
-
-let currentPage = 1;
-const newsPerPage = 9;
 
 async function fetchLatestNews(filters = {}) {
     try {
         const queryParams = new URLSearchParams({
             page: currentPage,
             limit: newsPerPage,
+            ...filters
         });
 
         const response = await fetch(`${API_URL}/api/news?${queryParams}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
+        if (!response.ok) return;
         
+        const data = await response.json();
         const newsGrid = document.getElementById('newsGrid');
-        if (newsGrid) {
+        if (newsGrid && data.news) {
             if (currentPage === 1) {
                 newsGrid.innerHTML = '';
             }
-            
             displayNews(data.news, newsGrid);
             
             const loadMoreBtn = document.querySelector('.load-more-btn');
@@ -57,32 +51,34 @@ async function fetchLatestNews(filters = {}) {
             }
         }
     } catch (error) {
-        console.error('Failed to fetch latest news:', error);
+        console.log('Latest news fetch failed');
     }
 }
 
 async function fetchTrendingNews() {
     try {
         const response = await fetch(`${API_URL}/api/news/trending`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const categories = await response.json();
+        if (!response.ok) return;
+        
+        const trending = await response.json();
         displayTrending(trending);
-    } catch (err) {
-        console.error('Error:', err);
+    } catch (error) {
+        console.log('Trending news fetch failed');
     }
 }
 
 async function fetchCategories() {
     try {
         const response = await fetch(`${API_URL}/api/categories`);
+        if (!response.ok) return;
+        
         const categories = await response.json();
         displayCategories(categories);
-    } catch (err) {
-        console.error('Error:', err);
+    } catch (error) {
+        console.log('Categories fetch failed');
     }
 }
+
 
 
 function displayNews(news, container) {
