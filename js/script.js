@@ -3,34 +3,23 @@ import { API_URL } from './config.js';
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.querySelector('.theme-toggle');
     const root = document.documentElement;
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-
-    function updateThemeIcon(theme) {
-        const icon = themeToggle?.querySelector('i');
-        if (icon) {
-            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-    }
-
+    
     function setTheme(theme) {
-        if (root) {
-            root.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            updateThemeIcon(theme);
-        }
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        const icon = themeToggle.querySelector('i');
+        icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     }
 
-    const savedTheme = localStorage.getItem('theme') || 
-        (prefersDarkScheme.matches ? 'dark' : 'light');
+    const savedTheme = localStorage.getItem('theme') || 'light';
     setTheme(savedTheme);
 
-    themeToggle?.addEventListener('click', () => {
-        const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     });
 });
-
-
     
     const root = document.documentElement;
 
