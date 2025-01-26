@@ -1,5 +1,9 @@
 import { API_URL } from './config.js';
 
+if (!API_URL) {
+    console.error('API_URL is not defined. Please check your config.js file.');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
     if (path === '/' || path.includes('index.html')) {
@@ -31,10 +35,12 @@ async function fetchLatestNews(filters = {}) {
         const queryParams = new URLSearchParams({
             page: currentPage,
             limit: newsPerPage,
-            ...filters
         });
 
         const response = await fetch(`${API_URL}/api/news?${queryParams}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         
         const newsGrid = document.getElementById('newsGrid');
@@ -50,16 +56,18 @@ async function fetchLatestNews(filters = {}) {
                 loadMoreBtn.style.display = data.hasMore ? 'block' : 'none';
             }
         }
-    } catch (err) {
-        console.error('Error:', err);
-        showError('Failed to load news');
+    } catch (error) {
+        console.error('Failed to fetch latest news:', error);
     }
 }
 
 async function fetchTrendingNews() {
     try {
         const response = await fetch(`${API_URL}/api/news/trending`);
-        const trending = await response.json();
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const categories = await response.json();
         displayTrending(trending);
     } catch (err) {
         console.error('Error:', err);
