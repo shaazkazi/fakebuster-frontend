@@ -4,11 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.querySelector('.theme-toggle');
     const root = document.documentElement;
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
+    function updateThemeIcon(theme) {
+        const icon = themeToggle?.querySelector('i');
+        if (icon) {
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+
     function setTheme(theme) {
-        root.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        updateThemeIcon(theme);
+        if (root) {
+            root.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
     }
 
     const savedTheme = localStorage.getItem('theme') || 
@@ -20,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTheme(newTheme);
     });
 });
+
 
     
     // Function to set theme

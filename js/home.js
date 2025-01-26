@@ -1,23 +1,27 @@
 import { API_URL } from './config.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    if (window.location.pathname.includes('index.html')) {
-        await initializeHome();
+document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    if (path === '/' || path.includes('index.html')) {
+        initializeHome();
     }
 });
 
-
 async function initializeHome() {
-    await Promise.all([
-        fetchLatestNews(),
-        fetchTrendingNews(),
-        fetchCategories()
-    ]);
-
-    setupSearch();
-    setupFilters();
-    setupInfiniteScroll();
+    try {
+        await Promise.all([
+            fetchLatestNews().catch(() => {}),
+            fetchTrendingNews().catch(() => {}),
+            fetchCategories().catch(() => {})
+        ]);
+        setupSearch();
+        setupFilters();
+        setupInfiniteScroll();
+    } catch (error) {
+        console.log('Some features may not be available');
+    }
 }
+
 
 let currentPage = 1;
 const newsPerPage = 9;
