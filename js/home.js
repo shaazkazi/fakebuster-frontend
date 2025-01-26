@@ -27,7 +27,7 @@ async function fetchLatestNews(filters = {}) {
             ...filters
         });
 
-        const response = await fetch(`http://localhost:5000/api/news?${queryParams}`);
+        const response = await fetch(`${API_URL}/api/news?${queryParams}`);
         const data = await response.json();
         
         const newsGrid = document.getElementById('newsGrid');
@@ -51,7 +51,7 @@ async function fetchLatestNews(filters = {}) {
 
 async function fetchTrendingNews() {
     try {
-        const response = await fetch('http://localhost:5000/api/news/trending');
+        const response = await fetch(`${API_URL}/api/news/trending`);
         const trending = await response.json();
         displayTrending(trending);
     } catch (err) {
@@ -61,13 +61,14 @@ async function fetchTrendingNews() {
 
 async function fetchCategories() {
     try {
-        const response = await fetch('http://localhost:5000/api/categories');
+        const response = await fetch(`${API_URL}/api/categories`);
         const categories = await response.json();
         displayCategories(categories);
     } catch (err) {
         console.error('Error:', err);
     }
 }
+
 
 function displayNews(news, container) {
     if (container && Array.isArray(news)) {
