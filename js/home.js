@@ -1,29 +1,43 @@
 import { API_URL } from './config.js';
 
+let currentPage = 1;
+const newsPerPage = 9;
+
 document.addEventListener('DOMContentLoaded', () => {
-    initializeHome();
+    const path = window.location.pathname;
+    if (path === '/' || path.includes('index.html')) {
+        initializeHome();
+    }
 });
 
 async function initializeHome() {
-    // Initialize with empty data first
-    displayNews([], document.getElementById('newsGrid'));
-    displayTrending([]);
-    displayCategories([]);
-
-    // Then try to fetch data
+    displayEmptyStates();
+    
     try {
-        await Promise.allSettled([
+        const [newsResponse, trendingResponse, categoriesResponse] = await Promise.allSettled([
             fetchLatestNews(),
             fetchTrendingNews(),
             fetchCategories()
         ]);
+        
+        setupSearch();
+        setupFilters();
+        setupInfiniteScroll();
     } catch (error) {
         console.log('Some features may not be available');
     }
+}
 
-    setupSearch();
-    setupFilters();
-    setupInfiniteScroll();
+function displayEmptyStates() {
+    const newsGrid = document.getElementById('newsGrid');
+    if (newsGrid) {
+        newsGrid.innerHTML = '<div class="loading">Loading latest news...</div>';
+    }
+    
+    const trendingSection = document.getElementById('trendingSection');
+    if (trendingSection) {
+        trendingSection.innerHTML = '<div class="loading">Loading trending news...</div>';
+    }
 }
 
 async function fetchLatestNews(filters = {}) {
@@ -78,8 +92,6 @@ async function fetchCategories() {
         console.log('Categories fetch failed');
     }
 }
-
-
 
 function displayNews(news, container) {
     if (container && Array.isArray(news)) {
@@ -204,14 +216,14 @@ function formatDate(dateString) {
 }
 
 function formatStatus(status) {
-    return status.split('-').map(word => 
+    return status.split('-').map(word =>
         word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ');
 }
 
 function truncateText(text, length) {
-    return text.length > length ? 
-        text.substring(0, length) + '...' : 
+    return text.length > length ?
+        text.substring(0, length) + '...' :
         text;
 }
 
@@ -245,17 +257,14 @@ function showError(message) {
     setTimeout(() => errorContainer.remove(), 3000);
 }
 
-// Export functions for testing
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        fetchLatestNews,
-        fetchTrendingNews,
-        fetchCategories,
-        displayNews,
-        displayTrending,
-        displayCategories,
-        formatDate,
-        formatStatus,
-        truncateText
-    };
-}
+export {
+    fetchLatestNews,
+    fetchTrendingNews,
+    fetchCategories,
+    displayNews,
+    displayTrending,
+    displayCategories,
+    formatDate,
+    formatStatus,
+    truncateText
+};

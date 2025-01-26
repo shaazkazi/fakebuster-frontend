@@ -1,26 +1,9 @@
-import { API_URL } from './config.js';
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Filter Tabs
-    const filterTabs = document.querySelectorAll('.filter-tabs button');
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            filterTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-        });
-    });
+    initializeAnimations();
+    setupEventListeners();
+});
 
-    // Smooth Scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href'))?.scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    // Animation Observer
+function initializeAnimations() {
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach(entry => {
@@ -35,9 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.news-card, .step, .stat-card').forEach(el => {
         observer.observe(el);
     });
-
-    displaySubmittedNews();
-});
+}
 
 function displaySubmittedNews() {
     const newsGrid = document.querySelector('.news-grid');
