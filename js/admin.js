@@ -1,3 +1,5 @@
+import { API_URL } from './config.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     if (!localStorage.getItem('token')) {
         window.location.href = 'index.html';

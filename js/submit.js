@@ -1,3 +1,5 @@
+import { API_URL } from './config.js';
+
 const ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
